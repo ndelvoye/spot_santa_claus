@@ -28,6 +28,23 @@
             marker.bindPopup((new Date()).toUTCString());
             markers.push(marker);
 
+            function getMoyenne(list) {
+                var sumLatitude = 0;
+                for (let i = 1; i < list.length; i++) {
+                    sumLatitude += list[i]
+                }
+                return (sumLatitude/(list.length - 1));
+            }
+
+            // On supprime le marqueur la position estimée de la maison du Père Noël
+            var latArray = []
+            var lngArray = []
+            markers.forEach(m => {
+                latArray.push(m.getLatLng().lat)
+                lngArray.push(m.getLatLng().lng)
+            })
+            markers[0].setLatLng([getMoyenne(latArray), getMoyenne(lngArray)])
+            markers[0].setZIndexOffset(100);
             const group = new L.featureGroup(markers); // Nous créons le groupe des marqueurs pour adapter le zoom
             maCarte.fitBounds(group.getBounds().pad(0.5)); // Nous demandons à ce que tous les marqueurs soient visibles, et ajoutons un padding (pad(0.5)) pour que les marqueurs ne soient pas coupés
         });
@@ -67,7 +84,7 @@ async function initMap() {
                 iconSize: [32, 32]
             })
     }).addTo(maCarte);
-    marker.bindPopup("Santa Claus Village");
+    marker.bindPopup("Estimated Santa Claus home");
     markers.push(marker);
 
     return 1;
